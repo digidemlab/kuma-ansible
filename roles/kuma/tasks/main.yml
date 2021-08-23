@@ -1,0 +1,15 @@
+---
+# tasks file for metabase
+
+- name: Create the kuma container
+  docker_container:
+    name: kuma
+    image: louislam/uptime-kuma
+    restart: yes
+    pull: yes
+    ports:
+      - "3001:3001"
+    restart_policy: always
+    volumes:
+      - uptime-kuma:/app/data
+

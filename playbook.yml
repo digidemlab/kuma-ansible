@@ -1,0 +1,10 @@
+---
+# playbook file to set up the machine and install Decidim
+
+- hosts: all
+  roles:
+    - role: init_container
+    - role: docker
+    - role: kuma
+    - role: nginx
+    - role: letsencrypt

@@ -1,0 +1,40 @@
+---
+
+- name: apt public key for nginx
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: 561F9B9CAC40B2F7
+    state: present
+
+- name: install nginx
+  apt:
+    pkg:
+      - nginx
+    update_cache: yes
+
+- name: ensure nginx service is enabled
+  service:
+    name: nginx
+    enabled: yes
+
+- name: remove default nginx site
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: restart nginx
+
+- name: add rate limiting
+  copy:
+    dest: /etc/nginx/conf.d/metabase-rate-limit.conf
+    content: |
+      limit_req_zone $binary_remote_addr zone=one:10m rate=5r/s;
+  notify: restart nginx
+
+- name: create nginx kuma.conf
+  template:
+    src: kuma.conf.j2
+    dest: /etc/nginx/sites-enabled/kuma.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart nginx

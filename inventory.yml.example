@@ -1,0 +1,16 @@
+
+all:
+  hosts:
+    xxx.xxx.xxx.xxx
+  vars:
+    ansible_connection: ssh
+    ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
+    ansible_ssh_private_key_file: '~/.ssh/id_rsa'
+    ansible_python_interpreter: /usr/bin/python3
+    ansible_port: 22
+    timezone: Europe/Stockholm
+    default_container_name: docker
+    default_container_image: ubuntu
+    default_container_command: sleep 1d
+    letsencrypt_admin_email: pierre@digidemlab.org
+    domain: kuma.example.com

@@ -1,0 +1,22 @@
+---
+
+- name: install certbot package
+  apt:
+    pkg: python3-certbot-nginx
+    update_cache: yes
+
+- name: Check if certificate already exists.
+  stat:
+    path: /etc/letsencrypt/live/{{ domain }}/cert.pem
+  register: letsencrypt_cert
+
+# TODO http2 is not yet suppported by certbot (fix here and in template)
+- name: configure certbot (please check results at https://www.ssllabs.com/ssltest/analyze.html?d={{ domain }} )
+  # use -v to debug
+  shell: "certbot --non-interactive --preferred-challenges http --agree-tos --email {{ letsencrypt_admin_email }} --nginx -d {{ domain }}"
+  args:
+    creates: "/etc/letsencrypt/live/{{ domain }}/fullchain.pem;"
+  notify: restart nginx
+  #when: letsencrypt_cert.stat.exists == False
+
+# note. certbot creates automaticaly a cron entry with this file: /etc/cron.d/certbot
